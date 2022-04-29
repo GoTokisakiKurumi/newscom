@@ -18,10 +18,13 @@ class Users_model
 
   public function registrasiData($data)
   {
-    $email = htmlspecialchars($data["email"]);
-    $username = htmlspecialchars(strtolower(stripslashes($data["username"])));
-    $password = htmlspecialchars(mysqli_real_escape_string($this->db->conn, $data["password"]));
-    $verifikasi = htmlspecialchars(mysqli_real_escape_string($this->db->conn, $data["verifikasi"]));
+    $this->db->setValidated($data);
+    $validated = $this->db->getValidated();
+
+    $email = $validated["email"];
+    $username = $validated["username"];
+    $password = $validated["password"];
+    $verifikasi = $validated["verifikasi"];
     $profile = $this->uploadGambar();
 
     if ($password !== $verifikasi) {
@@ -41,7 +44,6 @@ class Users_model
 
     $result_email = $this->db->select($data);
     if (mysqli_fetch_assoc($result_email)) {
-      var_dump($result_email);
       echo "<script>
               alert('email sudah ada!');
             </script>";
@@ -55,7 +57,7 @@ class Users_model
               </script>";
       return false;
     }
-    die;
+
     $password = password_hash($password, PASSWORD_DEFAULT);
     mysqli_query($this->db->conn, "INSERT INTO " . $this->tabel . " VALUES ('null', '$email', '$username', '$password', '$profile')");
     $query = mysqli_query($this->db->conn, "SELECT id_users FROM $this->tabel");

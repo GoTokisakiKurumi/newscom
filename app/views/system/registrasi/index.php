@@ -16,7 +16,7 @@
         <ul>
           <h1>Registrasi</h1>
           <li><label for="username">Username</label></li>
-          <li><input type="text" name="username" id="username" maxlength="20" autofocus autocomplete="off"></li>
+          <li><input type="text" name="username" id="username" maxlength="15" autofocus autocomplete="off"></li>
           <li>
             <div id="username_error">usename tidak boleh kosong!</div>
           </li>
@@ -33,7 +33,7 @@
           <li><label for="verifikasi">Verifikasi Password</label></li>
           <li><input type="password" name="verifikasi" id="verifikasi" maxlength="20" autocomplete="off"></li>
           <li>
-            <div id="username_error">verifikasi tidak boleh kosong!</div>
+            <div id="password_error">verifikasi tidak boleh kosong!</div>
           </li>
           <li><label for="Profileimage">Profile Image</label></li>
           <li><input type="file" name="Profileimage" id="Profileimage" autocomplete="off"></li>

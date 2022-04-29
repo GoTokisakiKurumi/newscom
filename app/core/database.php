@@ -165,4 +165,27 @@ class Database
     mysqli_query($this->conn, $this->getQuery("delete"));
     return $this->rowCount();
   }
+
+  public function setValidated($data)
+  {
+    if (isset($data)) {
+      $this->email = filter_var(htmlspecialchars($data["email"], FILTER_VALIDATE_EMAIL));
+      $this->username = htmlspecialchars(strtolower(stripslashes($data["username"])));
+      $this->password = htmlspecialchars(mysqli_real_escape_string($this->conn, $data["password"]));
+      $this->verifikasi = htmlspecialchars(mysqli_real_escape_string($this->conn, $data["verifikasi"]));
+    } else {
+      return false;
+    }
+  }
+
+  public function getValidated()
+  {
+    $validated = [
+      "email" => $this->email,
+      "username" => $this->username,
+      "password" => $this->password,
+      "verifikasi" => $this->verifikasi
+    ];
+    return $validated;
+  }
 }
