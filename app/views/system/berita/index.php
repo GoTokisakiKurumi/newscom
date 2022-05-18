@@ -30,20 +30,15 @@ if ($data["berita"]) :
       <h5>Rekomendasi</h5>
     </div>
     <div class="container-rekomendasi">
-      <div class="rekomendasi">
-        <a href="#">
-          <img src="<?= BASEURL; ?>/image/thumbnails/<?= $data["berita"][0]["image"]; ?>">
-          <h5>NewsTerbaru</h5>
-          <p><?= $data["berita"][0]["judul"]; ?></p>
-        </a>
-      </div>
-      <div class="rekomendasi">
-        <a href="#">
-          <img src="<?= BASEURL; ?>/image/thumbnails/<?= $data["berita"][0]["image"]; ?>">
-          <h5>NewsTerbaru</h5>
-          <p><?= $data["berita"][0]["judul"]; ?></p>
-        </a>
-      </div>
+      <?php foreach ($data["rekomendasi"] as $data) : ?>
+        <div class="rekomendasi">
+          <a href="<?= BASEURL; ?>/../home/home/berita/<?= str_replace(' ', '-', $data["slug"]); ?>">
+            <img src="<?= BASEURL; ?>/image/thumbnails/<?= $data["image"]; ?>">
+            <h5>NewsTerbaru</h5>
+            <p><?= $data["judul"]; ?></p>
+          </a>
+        </div>
+      <?php endforeach; ?>
     </div>
   </div>
 <?php else : ?>

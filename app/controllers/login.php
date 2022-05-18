@@ -6,6 +6,7 @@ session_start();
 if (isset($_SESSION["login"])) {
   header('Location: dashboard');
 }
+
 class Login extends Controllers
 {
   public function index()
@@ -19,7 +20,7 @@ class Login extends Controllers
       echo "<script>
                   alert('username atau password salah!');
                   document.location.href = '../login';
-                </script>";
+            </script>";
     }
   }
 }

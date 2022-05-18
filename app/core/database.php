@@ -12,12 +12,14 @@ class Database
   protected $tabel;
   protected $select = "*";
   protected $from = "FROM";
-  protected $where = "WHERE";
+  protected $where = null;
 
   protected $relations = null;
   protected $and = null;
   protected $slug = null;
+  protected $order = null;
   protected $id = null;
+  protected $limit = null;
   protected $value = null;
 
   public $conn;
@@ -46,6 +48,11 @@ class Database
         $this->select = $data["select"];
       }
     }
+    if (isset($data["where"])) {
+      if (is_string($data["where"])) {
+        $this->where = "WHERE " . $data["where"];
+      }
+    }
     if (isset($data["relations"])) {
       if (is_string($data["relations"])) {
         $relation = $data["relations"];
@@ -65,9 +72,20 @@ class Database
         $this->slug = "'$slug'";
       }
     }
+    if (isset($data["order"])) {
+      if (is_string($data["order"])) {
+        $order = "ORDER BY " . $data["order"] . " DESC";
+        $this->order = $order;
+      }
+    }
     if (isset($data["id"])) {
       if (!is_int($data["id"])) {
         $this->id = $data["id"];
+      }
+    }
+    if (isset($data["limit"])) {
+      if (is_int($data["limit"])) {
+        $this->limit = "LIMIT " . $data["limit"];
       }
     }
     if (isset($data["value"])) {
@@ -81,13 +99,13 @@ class Database
   {
     if (is_string($type)) {
       if ($type === "post") {
-        return "INSERT INTO $this->tabel VALUES( $this->value ) ";
+        return "INSERT INTO $this->tabel VALUES( $this->value )";
       }
     }
 
     if (is_string($type)) {
       if ($type === "get") {
-        return "SELECT $this->select FROM $this->tabel $this->relations $this->and $this->id $this->slug";
+        return "SELECT $this->select FROM $this->tabel $this->where $this->relations $this->and $this->order $this->id $this->limit $this->slug";
       }
     }
 
@@ -123,7 +141,6 @@ class Database
     $query =  "SELECT $select FROM " .  $query["tabel"] .  $where .  $data;
     return mysqli_query($this->conn, $query);
   }
-
   public function selectNum($query)
   {
     if (is_string($query["tabel"])) {
@@ -143,6 +160,19 @@ class Database
       $rows[] = $row;
     }
     return $rows;
+  }
+
+  public function selectRekom($query)
+  {
+    $this->setQuery($query);
+    $rows = [];
+    $result = mysqli_query($this->conn, $this->getQuery("get"));
+    while ($row = mysqli_fetch_assoc($result)) {
+      $rows[] = $row;
+    };
+    $random = array_rand($rows, 2);
+    $randomOne = [$rows[$random[0]], $rows[$random[1]]];
+    return $randomOne;
   }
 
   public function insertData($query)
@@ -169,10 +199,10 @@ class Database
   public function setValidated($data)
   {
     if (isset($data)) {
-      $this->email = filter_var(htmlspecialchars($data["email"], FILTER_VALIDATE_EMAIL));
-      $this->username = htmlspecialchars(strtolower(stripslashes($data["username"])));
-      $this->password = htmlspecialchars(mysqli_real_escape_string($this->conn, $data["password"]));
-      $this->verifikasi = htmlspecialchars(mysqli_real_escape_string($this->conn, $data["verifikasi"]));
+      $this->email = filter_var(htmlspecialchars(@$data["email"], FILTER_VALIDATE_EMAIL));
+      $this->username = htmlspecialchars(strtolower(stripslashes(@$data["username"])));
+      $this->password = htmlspecialchars(mysqli_real_escape_string($this->conn, @$data["password"]));
+      $this->verifikasi = htmlspecialchars(mysqli_real_escape_string($this->conn, @$data["verifikasi"]));
     } else {
       return false;
     }

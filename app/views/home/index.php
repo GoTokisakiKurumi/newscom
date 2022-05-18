@@ -9,7 +9,7 @@ foreach ($data["berita"] as $data) :
   <div class="sec-berita">
     <img src="<?= BASEURL; ?>/image/thumbnails/<?= $data["image"]; ?>">
     <div class="sec-berita-text">
-      <p><a href="berita/<?= str_replace(' ', '-', $data["slug"]); ?>"><?= $data["judul"]; ?></a></p>
+      <p><a href="home/berita/<?= str_replace(' ', '-', $data["slug"]); ?>"><?= $data["judul"]; ?></a></p>
       <span class="tgl-post"><?= time::TimeAgo(strtotime($TimeAgo)); ?> | News.com</span>
     </div>
   </div>

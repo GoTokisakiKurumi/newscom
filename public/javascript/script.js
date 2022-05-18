@@ -7,11 +7,7 @@ function autoSlide() {
 	counter += 1;
 	slidefun(counter);
 }
-function currentSlide(n) {
-	counter = n;
-	slidefun(counter);
-	resetTimer();
-}
+
 function resetTimer() {
 	clearInterval(timer);
 	timer = setInterval(autoSlide, 5000);

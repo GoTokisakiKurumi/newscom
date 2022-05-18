@@ -1,10 +1,13 @@
 <?php
 session_start();
 $data = isset($_SESSION["admin"]) ? $_SESSION["admin"] : '';
+
 if ($data) {
   $profile = $_SESSION["admin"]["Profileimage"];
+  $banner = $_SESSION["admin"]["Bannerimage"];
 } else {
   $profile = "default.png";
+  $banner = "default.png";
 }
 ?>
 <!DOCTYPE html>
@@ -36,10 +39,18 @@ if ($data) {
     <head class="container-head">
       <div class="text-kategori">
         <ul>
-          <li <?= include "../App/views/system/home/index.php" ?>><a href="<?= SETURL; ?>/">Home</a></li>
-          <li <?= include "../App/views/system/terbaru/index.php"; ?>><a href="<?= SETURL; ?>/terbaru">Terbaru</a></li>
-          <li <?= include "../App/views/system/terpopuler/index.php"; ?>><a href="<?= SETURL; ?>/terpopuler">Terpopuler</a></li>
-          <li <?= include "../App/views/system/videos/index.php"; ?>><a href="<?= SETURL; ?>/videos">Videos</a></li>
+          <a href="<?= SETURL; ?>/">
+            <li <?= include "../App/views/system/home/index.php" ?>>Home</li>
+          </a>
+          <a href="<?= SETURL; ?>/terbaru">
+            <li <?= include "../App/views/system/terbaru/index.php"; ?>>Terbaru</li>
+          </a>
+          <a href="<?= SETURL; ?>/terpopuler">
+            <li <?= include "../App/views/system/terpopuler/index.php"; ?>>Terpopuler</li>
+          </a>
+          <a href="<?= SETURL; ?>/videos">
+            <li <?= include "../App/views/system/videos/index.php"; ?>>Videos</li>
+          </a>
         </ul>
       </div>
     </head>
@@ -49,6 +60,7 @@ if ($data) {
       <div class="container-profile">
         <div class="profile-img"><br>
           <img src="<?= BASEURL; ?>/image/profil/<?= $profile; ?>"><br>
+          <img src="<?= BASEURL; ?>/image/banner/<?= $banner; ?>">
         </div>
       </div>
       <h4>Kategori</h4>

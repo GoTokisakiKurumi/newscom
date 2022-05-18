@@ -24,16 +24,7 @@ class Users_model
     $email = $validated["email"];
     $username = $validated["username"];
     $password = $validated["password"];
-    $verifikasi = $validated["verifikasi"];
     $profile = $this->uploadGambar();
-
-    if ($password !== $verifikasi) {
-      echo "<script>
-                alert('verifikasi password salah!');
-                document.location.href = '../registrasi';
-             </script>";
-      return false;
-    }
 
     $data = [
       "tabel" => $this->tabel,
@@ -113,21 +104,24 @@ class Users_model
 
   public function dataLogin($data)
   {
-    $email = $data["email"];
-    $password = $data["password"];
+    $this->db->setValidated($data);
+    $validated = $this->db->getValidated();
+    $email = $validated["email"];
+    $password = $validated["password"];
 
-    $result = mysqli_query($this->db->conn, "SELECT * FROM " . $this->tabel . " WHERE email = '$email'");
-    $Aresult = mysqli_query($this->db->conn, "SELECT * FROM tb_users , tb_admin WHERE tb_users.id_users = tb_admin.id_users AND tb_users.email = '$email'");
-    $admin = mysqli_fetch_assoc($Aresult);
+    $data = [
+      "tabel" => $this->tabel,
+      "where" => "email = '$email'"
+    ];
 
-    if (mysqli_num_rows($result) === 1) {
-      $row = mysqli_fetch_assoc($result);
-      if (password_verify($password, $row["password"])) {
-        $_SESSION["login"] = true;
-        $_SESSION["admin"] = $admin;
-        header("Location: ../dashboard/dashboard");
-        exit;
-      }
+    $result = $this->db->selectAll($data);
+    $resultAdmin = mysqli_query($this->db->conn, "SELECT * FROM tb_users , tb_admin WHERE tb_users.id_users = tb_admin.id_users AND tb_users.email = '$email'");
+    $admin = mysqli_fetch_assoc($resultAdmin);
+    if (password_verify($password, $result[0]["password"])) {
+      $_SESSION["login"] = true;
+      $_SESSION["admin"] = $admin;
+      header("Location: ../dashboard/dashboard");
+      exit;
     }
   }
 }

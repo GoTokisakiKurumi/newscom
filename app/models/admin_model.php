@@ -45,12 +45,42 @@ class Admin_model
     return $this->db->selectAll($data);
   }
 
+  public function tampilkanBeritaRekomendasi()
+  {
+    $data = [
+      "tabel" => $this->tabel,
+      "limit" => 25
+    ];
+
+    return $this->db->selectRekom($data);
+  }
+  public function tampilkanBeritaTerbaru()
+  {
+    $data  = [
+      "tabel" => $this->tabel,
+      "order" => "id_berita",
+    ];
+
+    return $this->db->selectAll($data);
+  }
+
+  public function tampilkanBeritaByLimit()
+  {
+    $data  = [
+      "tabel" => $this->tabel,
+      "order" => "id_berita",
+      "limit" => 5
+    ];
+
+    return $this->db->selectAll($data);
+  }
+
   public function tampilkanBeritaByAdmin()
   {
     if (isset($_SESSION["admin"])) {
-      $this->id_admin = $_SESSION["admin"]["id_admin"];
+      $this->id_admin  = $_SESSION["admin"]["id_admin"];
     }
-    $data = [
+    $data  = [
       "tabel" => "$this->tabel, $this->rtabel",
       "relations" => "id_admin",
       "and" => "tb_berita.id_admin",
@@ -62,8 +92,8 @@ class Admin_model
 
   public function tampilkanBeritaBySlugs($slugs)
   {
-    $slug = str_replace('-', ' ', $slugs);
-    $data = [
+    $slug  = str_replace('-', ' ', $slugs);
+    $data  = [
       "tabel" => "$this->tabel, $this->rtabel",
       "relations" => "id_admin",
       "and" => "tb_berita.slug",
@@ -75,7 +105,7 @@ class Admin_model
 
   public function tambahBerita($data)
   {
-    $this->id_admin = $_SESSION["admin"]["id_users"];
+    $this->id_admin  = $_SESSION["admin"]["id_users"];
     $judul       = htmlspecialchars($data["judul"]);
     $title       = htmlspecialchars($judul);
     $content     = $data["content"];
@@ -86,14 +116,13 @@ class Admin_model
     }
     $tanggal     = htmlspecialchars($data["tanggal"]);
     $jam         = htmlspecialchars($data["jam"]);
+    $hari  = array(1 => 'Senin ', 'Selasa ', 'Rabu ', 'Kamis ', 'Jumat ', 'Sabtu ', 'Minggu');
+    $bulan  = array(1 => 'Januari ', 'Februari ', 'Maret ', 'April ', 'Mei ', 'Juni ', 'Juli ', 'Agustus ', 'September ', 'Oktober ', 'November ', 'Desember');
+    $pecah  = explode('- ', "$tanggal");
+    $num  = date('N ', strtotime("$tanggal"));
+    $t_tanggal  = $hari[$num]  . ',  '  . $pecah[2]  . '  '  . $bulan[(int) $pecah[1]]  . '  '  . $pecah[0];
 
-    $hari = array(1 => 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu');
-    $bulan = array(1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember');
-    $pecah = explode('-', "$tanggal");
-    $num = date('N', strtotime("$tanggal"));
-    $t_tanggal = $hari[$num] . ', ' . $pecah[2] . ' ' . $bulan[(int)$pecah[1]] . ' ' . $pecah[0];
-
-    $data = [
+    $data  = [
       "tabel" => $this->tabel,
       "value" => "'null' , '$this->id_admin', 
                    '$judul', '$title', '$content', 
@@ -106,10 +135,11 @@ class Admin_model
 
   public function uploadGambar()
   {
-    $namaGambar = $_FILES["image"]["name"];
-    $sizeGambar = $_FILES["image"]["size"];
-    $error      = $_FILES["image"]["error"];
-    $tmpName    = $_FILES["image"]["tmp_name"];
+    $namaGambar  = $_FILES["image"]["name"];
+    $sizeGambar  = $_FILES["image"]["size"];
+    $error       = $_FILES["image"]["error"];
+    $tmpName     = $_FILES["image"]["tmp_name"];
+
 
     if ($error === 4) {
       echo "<script>
@@ -119,48 +149,48 @@ class Admin_model
       return false;
     }
 
-    $typeGambarValid = ['jpg', 'jpeg', 'png'];
-    $typeGambar = explode('.', $namaGambar);
-    $typeGambar = strtolower(end($typeGambar));
+    $typeGambarValid  = ['jpg', 'jpeg ', 'png'];
+    $typeGambar  = explode('.', $namaGambar);
+    $typeGambar  = strtolower(end($typeGambar));
     if (!in_array($typeGambar, $typeGambarValid)) {
       echo "<script>
                 alert('tidak terdeteksi gambar!');
-              </script>";
+            </script>";
       return false;
     }
 
-    if ($sizeGambar > 5000000) {
+    if ($sizeGambar  > 5000000) {
       echo "<script>
                 alert('ukuran gambar terlalu besar!');
               </script>";
       return false;
     }
 
-    $namaGambarNew = uniqid();
+    $namaGambarNew  = uniqid();
     $namaGambarNew .= '.';
     $namaGambarNew .= $typeGambar;
-    move_uploaded_file($tmpName, '../Public/image/thumbnails/' . $namaGambarNew);
+    move_uploaded_file($tmpName, '../public/image/thumbnails /'  . $namaGambarNew);
     return $namaGambarNew;
   }
 
   public function editBerita($data)
   {
-    $id_berita = htmlspecialchars($data["id_berita"]);
-    $judul     = htmlspecialchars($data["judul"]);
-    $slug      = htmlspecialchars($data["slug"]);
-    $content   = $data["content"];
-    $tanggal   = htmlspecialchars($data["tanggal"]);
-    $jam       = htmlspecialchars($data["jam"]);
-    $imageOld  = htmlspecialchars($data["imageOld"]);
+    $id_berita  = htmlspecialchars($data["id_berita"]);
+    $judul      = htmlspecialchars($data["judul"]);
+    $slug       = htmlspecialchars($data["slug"]);
+    $content    = $data["content"];
+    $tanggal    = htmlspecialchars($data["tanggal"]);
+    $jam        = htmlspecialchars($data["jam"]);
+    $imageOld   = htmlspecialchars($data["imageOld"]);
 
-    if ($_FILES["image"]["error"] === 4) {
-      $image = $imageOld;
+    if ($_FILES["image"]["error "] === 4) {
+      $image  = $imageOld;
     } else {
-      unlink('../Public/image/thumbnails/' . $data["imageOld"]);
-      $image = $this->uploadGambar();
+      unlink('../Public/image/thumbnails /'  . $data["imageOld"]);
+      $image  = $this->uploadGambar();
     }
 
-    $data = [
+    $data  = [
       "tabel" => $this->tabel,
       "value" => "judul = '$judul', 
                   slug = '$slug',
@@ -169,6 +199,7 @@ class Admin_model
                   tanggal = '$tanggal',
                   jam = '$jam'",
       "id" => "id_berita = '$id_berita'"
+
     ];
 
     return $this->db->updateData($data);
@@ -176,26 +207,26 @@ class Admin_model
 
   public function hapusBerita($id_berita)
   {
-    $data = [
-      "tabel"  => $this->tabel,
+    $data  = [
+      "tabel "  => $this->tabel,
       "id" => "id_berita = $id_berita"
     ];
 
-    $namaGambar = $this->tampilkanBerita();
+    $namaGambar  = $this->tampilkanBerita();
     $this->db->deleteData($data);
-    unlink('../Public/image/thumbnails/' . $namaGambar[0]["image"]);
+    unlink('../Public/image/thumbnails /'  . $namaGambar[0]["image"]);
   }
 
   public function hapusAdmin($id_users, $image)
   {
-    $admin = [
-      "admin" => "DELETE FROM " . $this->rtabel . " WHERE id_admin = $id_users",
-      "users" => "DELETE FROM " . $this->utabel . " WHERE id_users = $id_users",
+    $admin  = [
+      "admin" => "DELETE FROM  "  . $this->rtabel  . " WHERE id_admin = $id_users",
+      "users" => "DELETE FROM  "  . $this->utabel  . " WHERE id_users = $id_users",
       "image" => $image
     ];
     mysqli_query($this->db->conn, $admin["admin"]);
     mysqli_query($this->db->conn, $admin["users"]);
     $this->hapusBerita($id_users);
-    unlink('../Public/image/profil/' . $admin["image"]);
+    unlink('../Public/image/profil /'  . $admin["image"]);
   }
 }
