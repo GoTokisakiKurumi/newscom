@@ -141,6 +141,7 @@ class Database
     $query =  "SELECT $select FROM " .  $query["tabel"] .  $where .  $data;
     return mysqli_query($this->conn, $query);
   }
+
   public function selectNum($query)
   {
     if (is_string($query["tabel"])) {
@@ -154,7 +155,7 @@ class Database
   public function selectAll($query)
   {
     $this->setQuery($query);
-    $rows =  [];
+    $rows = [];
     $result = mysqli_query($this->conn, $this->getQuery("get"));
     while ($row = mysqli_fetch_assoc($result)) {
       $rows[] = $row;

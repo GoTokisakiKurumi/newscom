@@ -1,3 +1,9 @@
+<?php
+
+use app\core\Flasher;
+
+?>
+
 <!DOCTYPE>
 <html>
 
@@ -11,13 +17,16 @@
 
 <body>
   <div class="container-login">
-    <form class="login" action="login/loginVerify" method="post">
+    <form class="login" name="form" action="login/loginVerify" method="post" onsubmit=" return validated()">
       <h1>Login</h1>
       <ul>
         <li><label for="email">Email</label></li>
-        <li><input type="text" name="email" maxlength="20" required autocomplete="off"></li>
+        <li><input type="text" id="email" name="email" maxlength="20" required autocomplete="off"></li>
+        <li><span class="email_error">email tidak valid!</span></li>
         <li><label for="password">Password</label></li>
-        <li><input type="password" name="password" required autocomplete="off"></li>
+        <li><input type="password" id="password" name="password" required autocomplete="off"></li>
+        <li><span class="password_error">password tidak valid!</span></li>
+        <?php Flasher::flashData(); ?>
         <li><button type="submit">Login</label></li>
         <li>
           <p><a href="registrasi">daftar</a></p>
@@ -26,5 +35,6 @@
     </form>
   </div>
 </body>
+<script src="<?= BASEURL; ?>/javascript/validated/login/script.js"></script>
 
 </html>

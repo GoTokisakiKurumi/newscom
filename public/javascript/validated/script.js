@@ -4,6 +4,11 @@
   const password = document.forms['form']['password'];
   const verifikasi = document.forms['form']['verifikasi'];
 
+  const button_image = document.querySelector('.fa-solid');
+  const filesimage = document.getElementById('Profileimage');
+  const imageprofile = document.getElementById('imageProfile');
+  const iconimage = document.querySelector('.fa-solid');
+
   const username_error = document.getElementById('username_error');
   const email_error = document.getElementById('email_error');
   const password_error = document.getElementById('password_error');
@@ -15,64 +20,77 @@
   email.addEventListener('textInput', email_verify);
   password.addEventListener('textInput', password_verify);
   verifikasi.addEventListener('textInput', verifikasi_verify);
-
-  function validated() {
-    if (username.value.length < 5) {
-      username.style.border = '2px solid red';
-      username.style.borderRadius = '3px';
+  filesimage.addEventListener('change', profile);
+  
+  function validated () {
+    if ( username.value.length < 5) {
       username_error.style.display = 'block';
-      username.style.outline = 'none';
       return false;
-    }
-    if (email.value.length < 9) {
-      email.style.border = '2px solid red';
-      email.style.borderRadius = '3px';
+    } else if ( password.value !== verifikasi.value ) {
+      verifikasi_error.style.display = 'block';
+      return false;
+    } else if ( email.value.length < 10 ) {
       email_error.style.display = 'block';
-      email.style.outline = 'none';
       return false;
-    }
-    if (password.value.length < 6 ) {
-      password.style.border = '2px solid red';
-      password.style.borderRadius = '3px';
+    } else if ( password.value.length < 7 ) {
       password_error.style.display = 'block';
-      password.style.outline = 'none';
-      return false;
-    }
-    if (password.value !== verifikasi.value) {
-       verifikasi.style.border = '2px solid red';
-       verifikasi.style.borderRadius = '3px';
-       verifikasi_error.style.display = 'block';
       return false;
     }
   }
 
   function username_verify() {
-    if (username.value.length >= 6) {
-      username.style.border = '2px solid #0086FF';
-      username.style.borderRadius = '3px';
+    if ( username.value.length >= 5 ) {
+      username.style.border = '1px solid #0086FF';
       username_error.style.display = 'none';
-      return true;
+    } else {
+      username.style.border = '1px solid red';
     }
   }
 
-  function email_verify() {
-    if (email.value.length >= 8) {
-      email.style.border = '2px solid #0086FF';
-      email.style.borderRadius = '3px';
+  function email_verify () {
+    if ( email.value.length >= 10 ) {
+      email.style.border = '1px solid #0086FF';
       email_error.style.display = 'none';
-      return true;
+    } else {
+      email.style.border = '1px solid red';
     }
   }
 
-  function password_verify() {
-    if (password.value.length >= 5) {
-      password.style.border = '2px solid #0086FF';
+  function password_verify () {
+    if ( password.value.length >= 6 ) {
+      password.style.border = '1px solid #0086FF';
       password_error.style.display = 'none';
-      return true;
+    } else {
+      password.style.border = '1px solid red';
     }
   }
-  function verifikasi_verify() {
-    if (verifikasi.value == password.value) {
+
+  function verifikasi_verify () {
+    if ( verifikasi.value.length >= 6 ) {
+      verifikasi.style.border = '1px solid #0086FF';
       verifikasi_error.style.display = 'none';
+    } else {
+      verifikasi.style.border = '1px solid red';
+    }
+  }
+
+  button_image.addEventListener('click', function(){
+    filesimage.click();
+  });
+
+  function profile () {
+    const file = this.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function() {
+        const result = reader.result;
+        const type = ['image/jpg','image/jpeg','image/png'];
+        const check = type.includes(file['type']);
+        if ( true == check ) {
+          iconimage.style.display = 'none';
+          imageprofile.src = result;
+        }
+      }
+      reader.readAsDataURL(file);
     }
   }

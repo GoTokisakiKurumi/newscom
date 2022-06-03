@@ -1,6 +1,7 @@
 <?php
 
 use app\core\Controllers;
+use app\core\Flasher;
 
 class Registrasi extends Controllers
 {
@@ -11,16 +12,11 @@ class Registrasi extends Controllers
 
   public function postData()
   {
-    if (Controllers::model('Users_model')->RegistrasiData($_POST) > 0) {
+    if (Controllers::model('Users_model')->registrasiData($_POST) > 0) {
       echo "<script>
                 alert('users baru berhasil ditambahkan');
-                document.location.href = '../login';
-              </script>";
-    } else {
-      echo "<script>
-                alert('users baru gagal ditambahkan');
-                document.location.href = '../registrasi';
-              </script>";
+                //document.location.href = '';
+            </script>";
     }
   }
 }

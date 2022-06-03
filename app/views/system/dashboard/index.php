@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION["login"])) :
-  header('Location: home');
+  header('location: home');
 endif;
 
 ?>

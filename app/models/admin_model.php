@@ -90,6 +90,16 @@ class Admin_model
     return $this->db->selectAll($data);
   }
 
+  public function tampilkanBeritaById($id)
+  {
+    $data = [
+      "tabel" => $this->tabel,
+      "where" => "id_berita = '$id'"
+    ];
+
+    return $this->db->selectAll($data);
+  }
+
   public function tampilkanBeritaBySlugs($slugs)
   {
     $slug  = str_replace('-', ' ', $slugs);
@@ -105,7 +115,7 @@ class Admin_model
 
   public function tambahBerita($data)
   {
-    $this->id_admin  = $_SESSION["admin"]["id_users"];
+    $this->id_admin  = $_SESSION["admin"]["id_admin"];
     $judul       = htmlspecialchars($data["judul"]);
     $title       = htmlspecialchars($judul);
     $content     = $data["content"];
@@ -116,11 +126,11 @@ class Admin_model
     }
     $tanggal     = htmlspecialchars($data["tanggal"]);
     $jam         = htmlspecialchars($data["jam"]);
-    $hari  = array(1 => 'Senin ', 'Selasa ', 'Rabu ', 'Kamis ', 'Jumat ', 'Sabtu ', 'Minggu');
+    $hari   = array(1 => 'Senin ', 'Selasa ', 'Rabu ', 'Kamis ', 'Jumat ', 'Sabtu ', 'Minggu');
     $bulan  = array(1 => 'Januari ', 'Februari ', 'Maret ', 'April ', 'Mei ', 'Juni ', 'Juli ', 'Agustus ', 'September ', 'Oktober ', 'November ', 'Desember');
-    $pecah  = explode('- ', "$tanggal");
-    $num  = date('N ', strtotime("$tanggal"));
-    $t_tanggal  = $hari[$num]  . ',  '  . $pecah[2]  . '  '  . $bulan[(int) $pecah[1]]  . '  '  . $pecah[0];
+    $pecah  = explode('-', "$tanggal");
+    $num    = date('N', strtotime("$tanggal"));
+    $t_tanggal  = $hari[$num]  . ','  . $pecah[2]  . ' '  . $bulan[(int) $pecah[1]]  . ' '  . $pecah[0];
 
     $data  = [
       "tabel" => $this->tabel,
@@ -169,7 +179,7 @@ class Admin_model
     $namaGambarNew  = uniqid();
     $namaGambarNew .= '.';
     $namaGambarNew .= $typeGambar;
-    move_uploaded_file($tmpName, '../public/image/thumbnails /'  . $namaGambarNew);
+    move_uploaded_file($tmpName, '../public/image/thumbnails/'  . $namaGambarNew);
     return $namaGambarNew;
   }
 
@@ -186,7 +196,7 @@ class Admin_model
     if ($_FILES["image"]["error "] === 4) {
       $image  = $imageOld;
     } else {
-      unlink('../Public/image/thumbnails /'  . $data["imageOld"]);
+      unlink('../public/image/thumbnails/'  . $data["imageOld"]);
       $image  = $this->uploadGambar();
     }
 
@@ -208,13 +218,13 @@ class Admin_model
   public function hapusBerita($id_berita)
   {
     $data  = [
-      "tabel "  => $this->tabel,
-      "id" => "id_berita = $id_berita"
+      "tabel" => $this->tabel,
+      "where" => "id_berita = '$id_berita'"
     ];
 
-    $namaGambar  = $this->tampilkanBerita();
+    $namaGambar = $this->tampilkanBeritaById($id_berita);
     $this->db->deleteData($data);
-    unlink('../Public/image/thumbnails /'  . $namaGambar[0]["image"]);
+    unlink('../public/image/thumbnails/' . $namaGambar[0]["image"]);
   }
 
   public function hapusAdmin($id_users, $image)
@@ -227,6 +237,6 @@ class Admin_model
     mysqli_query($this->db->conn, $admin["admin"]);
     mysqli_query($this->db->conn, $admin["users"]);
     $this->hapusBerita($id_users);
-    unlink('../Public/image/profil /'  . $admin["image"]);
+    unlink('../public/image/profil/'  . $admin["image"]);
   }
 }

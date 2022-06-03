@@ -1,8 +1,10 @@
 <?php
 
 use app\core\Database;
+use app\core\Flasher;
 
 session_start();
+
 class Users_model
 {
   private $db;
@@ -21,60 +23,18 @@ class Users_model
     $this->db->setValidated($data);
     $validated = $this->db->getValidated();
 
-    $email = $validated["email"];
-    $username = $validated["username"];
-    $password = $validated["password"];
-    $profile = $this->uploadGambar();
+    $email      = $validated["email"];
+    $username   = $validated["username"];
+    $password   = $validated["password"];
+    $banner     = IMG_DEFAULT;
+    $namaGambar = @$_FILES["Profileimage"]["name"];
+    $sizeGambar = @$_FILES["Profileimage"]["size"];
+    $error      = @$_FILES["Profileimage"]["error"];
+    $tmpName    = @$_FILES["Profileimage"]["tmp_name"];
 
-    $data = [
-      "tabel" => $this->tabel,
-      "select" => "email",
-      "where" => "email",
-      "data" => $email
-    ];
-
-    $result_email = $this->db->select($data);
-    if (mysqli_fetch_assoc($result_email)) {
-      echo "<script>
-              alert('email sudah ada!');
-            </script>";
-      return false;
-    }
-
-    $result_username = mysqli_query($this->db->conn, "SELECT username FROM " . $this->tabel . " WHERE username = '$username'");
-    if (mysqli_fetch_assoc($result_username)) {
-      echo "<script>
-                alert('nama sudah ada!');
-              </script>";
-      return false;
-    }
-
-    $password = password_hash($password, PASSWORD_DEFAULT);
-    mysqli_query($this->db->conn, "INSERT INTO " . $this->tabel . " VALUES ('null', '$email', '$username', '$password', '$profile')");
-    $query = mysqli_query($this->db->conn, "SELECT id_users FROM $this->tabel");
-    $rows = [];
-    while ($row = mysqli_fetch_assoc($query)) {
-      $rows[] = $row;
-    }
-    foreach ($rows as $id_users) {
-    }
-    $this->id_users = $id_users["id_users"];
-    mysqli_query($this->db->conn, "INSERT INTO " . $this->rtabel . " VALUES ('null', '$this->id_users', '$username', '$this->status')");
-    return $this->db->rowCount();
-  }
-
-  public function uploadGambar()
-  {
-    $namaGambar = $_FILES["Profileimage"]["name"];
-    $sizeGambar = $_FILES["Profileimage"]["size"];
-    $error      = $_FILES["Profileimage"]["error"];
-    $tmpName    = $_FILES["Profileimage"]["tmp_name"];
-
-    if ($error === 4) {
-      echo "<script>
-                alert('pilih gambar terlebih dahulu!');
-                document.location.href = '';
-              </script>";
+    if ($error  === 4) {
+      Flasher::setFlash('gambar tidak ada!', '');
+      header('Location: ' . SETURL . '/registrasi');
       return false;
     }
 
@@ -82,24 +42,62 @@ class Users_model
     $typeGambar = explode('.', $namaGambar);
     $typeGambar = strtolower(end($typeGambar));
     if (!in_array($typeGambar, $typeGambarValid)) {
-      echo "<script>
-                alert('tidak terdeteksi gambar!');
-              </script>";
+      Flasher::setFlash('tidak bisa selain gambar!', '');
+      header('Location: ' . SETURL . '/registrasi');
       return false;
     }
 
     if ($sizeGambar > 5000000) {
-      echo "<script>
-                alert('ukuran gambar terlalu besar!');
-              </script>";
+      Flasher::setFlash('size gambar terlalu besar!', '');
+      header('Location: ' . SETURL . '/registrasi');
       return false;
     }
 
     $namaGambarNew = uniqid();
     $namaGambarNew .= '.';
     $namaGambarNew .= $typeGambar;
-    move_uploaded_file($tmpName, '../Public/image/profil/' . $namaGambarNew);
-    return $namaGambarNew;
+
+    $data = [
+      "tabel" => $this->tabel,
+      "select" => "email",
+      "where" => "email = '$email'",
+    ];
+
+    $result_email = $this->db->selectAll($data);
+
+    if ($result_email) {
+      Flasher::setFlash('email sudah terdaftar!', '');
+      header('Location: ' . SETURL . '/registrasi');
+      return false;
+    }
+
+    $data = [
+      "tabel" => $this->tabel,
+      "select" => "username",
+      "where" => "username = '$username'"
+    ];
+
+    $result_username = $this->db->selectAll($data);
+    if ($result_username) {
+      Flasher::setFlash('nama sudah terdaftar!', '');
+      header('Location: ' . SETURL . '/registrasi');
+      return false;
+    }
+
+    $password = password_hash($password, PASSWORD_DEFAULT);
+    $data = [
+      "tabel" => $this->tabel,
+      "value" => "'null','$email','$username',
+                  '$password','$namaGambarNew',
+                  '$banner'",
+    ];
+
+    if ($this->db->insertData($data) > 0)  move_uploaded_file($tmpName, '../public/image/profile/' . $namaGambarNew);
+    $query = mysqli_query($this->db->conn, "SELECT id_users FROM $this->tabel WHERE email = '$email'");
+    $id_users = mysqli_fetch_assoc($query);
+    $this->id_users = $id_users["id_users"];
+    mysqli_query($this->db->conn, "INSERT  INTO " . $this->rtabel . " VALUES ('', '$this->id_users', '$username', '$this->status')");
+    return $this->db->rowCount();
   }
 
   public function dataLogin($data)
@@ -117,7 +115,7 @@ class Users_model
     $result = $this->db->selectAll($data);
     $resultAdmin = mysqli_query($this->db->conn, "SELECT * FROM tb_users , tb_admin WHERE tb_users.id_users = tb_admin.id_users AND tb_users.email = '$email'");
     $admin = mysqli_fetch_assoc($resultAdmin);
-    if (password_verify($password, $result[0]["password"])) {
+    if (password_verify($password, @$result[0]["password"])) {
       $_SESSION["login"] = true;
       $_SESSION["admin"] = $admin;
       header("Location: ../dashboard/dashboard");

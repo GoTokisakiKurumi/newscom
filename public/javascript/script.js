@@ -28,10 +28,12 @@ function slidefun(n) {
 	myslide[counter - 1].style.display = "block";
 }
 
-const btn = document.getElementById('btn');
+
+const navigation = document.querySelector('.navigation');
 const views_Bars = document.getElementById('views_Bars');
-btn.addEventListener('click', function(){
-  views_Bars.classList.toggle('slide-bars');
-})
 
-
+navigation.addEventListener('click', function(e){
+  if ( e.target.className == 'fa-solid fa-bars') {
+    views_Bars.classList.toggle('slide-bars');
+  }
+});

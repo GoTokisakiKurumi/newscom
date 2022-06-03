@@ -20,8 +20,16 @@ class Flasher
                   <i class="fa-solid fa-circle-check"></i>
                   <p>' . $_SESSION["flash"]["message"] . ' successfully ' . $_SESSION["flash"]["aksi"] . '</p>
                </div>
-              </div>';
+            </div>';
       unset($_SESSION["flash"]);
     }
+  }
+
+  public static function flashData()
+  {
+    if (isset($_SESSION["flash"])) {
+      echo '<span class="flash-message">' . $_SESSION["flash"]["message"] . '</span>';
+    }
+    unset($_SESSION["flash"]);
   }
 }

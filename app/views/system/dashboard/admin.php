@@ -8,7 +8,7 @@ use App\core\Flasher;
   <div class="container-card-admin">
     <?php Flasher::flash(); ?>
     <div class="card-admin">
-      <img src="<?= BASEURL; ?>/image/profil/<?= $data["Profileimage"]; ?>">
+      <img src="<?= BASEURL; ?>/image/profile/<?= $data["Profileimage"]; ?>">
       <h1><?= $data["nama"]; ?></h1>
       <p><?= $data["status"]; ?></p>
       <div class="action-flex">

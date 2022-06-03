@@ -11,8 +11,8 @@
     <p>©opyright @ 2022 News.com,All rights reversed</p>
   </footer>
 </div>
-   <section>
-   <script src="<?= BASEURL; ?>/javascript/script.js"></script>
+<section>
+  <script src="<?= BASEURL; ?>/javascript/script.js"></script>
   </body>
-</html>
 
+  </html>

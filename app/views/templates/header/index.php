@@ -32,7 +32,7 @@ if ($data) {
     <div class="container-nav">
       <nav class="navigation">
         <h1>News.com</h1>
-        <i id="btn" class="fa-solid fa-bars"></i>
+        <i class="fa-solid fa-bars"></i>
       </nav>
     </div>
 
@@ -40,16 +40,16 @@ if ($data) {
       <div class="text-kategori">
         <ul>
           <a href="<?= SETURL; ?>/">
-            <li <?= include "../App/views/system/home/index.php" ?>>Home</li>
+            <li <?= include "../app/views/system/home/index.php" ?>>Home</li>
           </a>
           <a href="<?= SETURL; ?>/terbaru">
-            <li <?= include "../App/views/system/terbaru/index.php"; ?>>Terbaru</li>
+            <li <?= include "../app/views/system/terbaru/index.php"; ?>>Terbaru</li>
           </a>
           <a href="<?= SETURL; ?>/terpopuler">
-            <li <?= include "../App/views/system/terpopuler/index.php"; ?>>Terpopuler</li>
+            <li <?= include "../app/views/system/terpopuler/index.php"; ?>>Terpopuler</li>
           </a>
           <a href="<?= SETURL; ?>/videos">
-            <li <?= include "../App/views/system/videos/index.php"; ?>>Videos</li>
+            <li <?= include "../app/views/system/videos/index.php"; ?>>Videos</li>
           </a>
         </ul>
       </div>
@@ -59,7 +59,7 @@ if ($data) {
     <ul id="views_Bars">
       <div class="container-profile">
         <div class="profile-img"><br>
-          <img src="<?= BASEURL; ?>/image/profil/<?= $profile; ?>"><br>
+          <img src="<?= BASEURL; ?>/image/profile/<?= $profile; ?>"><br>
           <img src="<?= BASEURL; ?>/image/banner/<?= $banner; ?>">
         </div>
       </div>
@@ -95,7 +95,7 @@ if ($data) {
         </div>
       </div>
       <span class="KatLine"></span>
-      <a href="<?= BASEURL; ?>/../Home/login">
+      <a href="<?= BASEURL; ?>/../home/login">
         <li><i class="fa-solid fa-house"></i><span>Admin</span></li>
       </a>
       <a href="#">
